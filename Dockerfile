@@ -11,7 +11,7 @@ COPY docker-entrypoint.sh /endkind/docker-entrypoint.sh
 RUN chmod +x /endkind/getPaperMC.sh
 RUN chmod +x /endkind/docker-entrypoint.sh
 
-ARG PAPERMC_VERSION=1.19.2
+ARG PAPERMC_VERSION=1.19.3
 RUN echo "$PAPERMC_VERSION" > /endkind/papermc_version
 
 WORKDIR /papermc
