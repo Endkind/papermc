@@ -60,6 +60,14 @@ You can customize your PaperMC server by setting the following environment varia
 
 These environment variables allow you to tailor your PaperMC server's configuration to your specific requirements. You can adjust memory allocation, specify custom Java flags, and configure various server settings to suit your needs.
 
+## How to build
+
+Replace `<version>` with the desired version.
+
+```bash
+docker build --build-arg PAPERMC_VERSION=<version> -t endkind/papermc:<version> .
+```
+
 ## Additional Information
 
 - [GitHub Repository](https://github.com/Endkind/papermc)
