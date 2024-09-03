@@ -1,4 +1,4 @@
-FROM eclipse-temurin:latest
+FROM eclipse-temurin:21
 RUN apt-get update && apt-get install -y \
     curl \
     jq
@@ -11,7 +11,7 @@ COPY docker-entrypoint.sh /endkind/docker-entrypoint.sh
 RUN chmod +x /endkind/getPaperMC.sh
 RUN chmod +x /endkind/docker-entrypoint.sh
 
-ARG PAPERMC_VERSION=latest
+ARG PAPERMC_VERSION=1.21
 RUN echo "$PAPERMC_VERSION" > /endkind/papermc_version
 
 WORKDIR /papermc
