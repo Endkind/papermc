@@ -33,7 +33,7 @@ By specifying a version like 1.20.1, you ensure that your server runs a known an
 ### All Supported Cersions
 
 - `latest` uses always the newest version
-- `1.21`, `1.21.1`
+- `1.21`, `1.21.1`, `1.21.3`, `1.21.4`
 - `1.20`, `1.20.1`, `1.20.2`, `1.20.4`, `1.20.5`, `1.20.6`
 - `1.19`, `1.19.1`, `1.19.2`, `1.19.3`, `1.19.4`
 - `1.18`, `1.18.1`, `1.18.2`
