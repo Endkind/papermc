@@ -1,0 +1,17 @@
+services:
+    papermc:
+        stdin_open: true
+        tty: true
+        ports:
+            - 25565:25565
+        container_name: endkind-papermc
+        volumes:
+            - endkind-papermc:/papermc
+        environment:
+            - MAX_RAM=3G
+            - MINECRAFT_EULA=true
+        restart: always
+        image: endkind/papermc:latest
+        
+volumes:
+    endkind-papermc:

@@ -73,6 +73,7 @@ docker build --build-arg PAPERMC_VERSION=<version> -t endkind/papermc:<version> 
 
 - [GitHub Repository](https://github.com/Endkind/papermc)
 - [Docker Repository](https://hub.docker.com/r/endkind/papermc)
+- [Docker Compose Example](https://github.com/Endkind/papermc/blob/main/docker-compose.yml)
 - [Visit our website](https://www.endkind.net) for more information about our projects and services.
 - Connect to our Minecraft server (crossplay) at `mc.endkind.net` and start your adventure!
 
