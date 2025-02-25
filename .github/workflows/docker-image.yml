@@ -66,7 +66,7 @@ jobs:
       run: |
         python -m venv .venv
         source .venv/bin/activate
-        pip install -r .github/requirements.txt
+        pip install -r .github/scripts/requirements_test.txt
 
     - name: Test the Docker image
       run: |
@@ -84,7 +84,7 @@ jobs:
           fi
 
           # Check if port 25565 is open
-          if .venv/bin/python .github/test.py; then
+          if .venv/bin/python .github/scripts/test.py; then
             echo "Port 25565 is open and accessible from the host."
             break
           fi
@@ -179,4 +179,3 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           filename: .github/ISSUE_TEMPLATE.md
-
