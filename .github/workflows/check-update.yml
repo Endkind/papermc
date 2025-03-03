@@ -14,7 +14,7 @@ jobs:
       run: |
         python -m venv .venv
         source .venv/bin/activate
-        pip install -r .github/scripts/requirements_ckeck_update.txt
+        pip install -r .github/scripts/requirements_check_update.txt
 
     - name: Check for updates
       run: |
