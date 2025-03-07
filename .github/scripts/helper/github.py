@@ -48,14 +48,12 @@ class GithubHelper:
     @staticmethod
     def get_repo_tags(
         repo_owner: str = GithubConfig.REPO_OWNER,
-        repo_name: str = GithubConfig.REPO_NAME,
-        token: str = GithubConfig.TOKEN
+        repo_name: str = GithubConfig.REPO_NAME
     ) -> List[str]:
         tags = []
         url = GithubHelper._get_base_repo_url(repo_owner, repo_name) / 'tags'
         headers = {
-            'Accept': 'application/vnd.github.v3+json',
-            'Authorization': f'token {token}',
+            'Accept': 'application/vnd.github.v3+json'
         }
 
         while True:
@@ -64,6 +62,7 @@ class GithubHelper:
             json = response.json()
 
             for entry in json:
+                print(entry)  # DEBUG
                 tags.append(entry['name'])
 
             if 'next' in response.links:
