@@ -1,21 +1,21 @@
 on:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: "0 0 * * *"
 
 jobs:
   check-update:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Check out the repository
-      uses: actions/checkout@v4
+      - name: Check out the repository
+        uses: actions/checkout@v4
 
-    - name: Prepare Python
-      run: |
-        python -m venv .venv
-        source .venv/bin/activate
-        pip install -r .github/scripts/requirements_check_update.txt
+      - name: Prepare Python
+        run: |
+          python -m venv .venv
+          source .venv/bin/activate
+          pip install -r .github/scripts/requirements_check_update.txt
 
-    - name: Check for updates
-      run: |
-        .venv/bin/python .github/scripts/check_update.py
+      - name: Check for updates
+        run: |
+          .venv/bin/python .github/scripts/check_update.py

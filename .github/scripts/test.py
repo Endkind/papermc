@@ -9,11 +9,15 @@ def check_mc_server(address, port):
 
         status = server.status()
 
-        print(f"Server is reachable! Players online: {status.players.online}/{status.players.max}")
+        print(
+            f"Server is reachable! Players online: {status.players.online}/{status.players.max}"
+        )
         print(f"Version: {status.version.name}")
         return True
     except Exception as e:
-        print(f"Minecraft server at {address}:{port} is not reachable or did not respond.")
+        print(
+            f"Minecraft server at {address}:{port} is not reachable or did not respond."
+        )
         print(f"Error: {e}")
         return False
 

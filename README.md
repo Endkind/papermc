@@ -65,6 +65,7 @@ These environment variables allow you to tailor your PaperMC server's configurat
 
 Replace `<version>` with the desired version.
 
+<!-- prettier-ignore -->
 ```bash
 docker build --build-arg PAPERMC_VERSION=<version> -t endkind/papermc:<version> .
 ```
