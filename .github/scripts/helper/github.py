@@ -62,7 +62,6 @@ class GithubHelper:
             json = response.json()
 
             for entry in json:
-                print(entry)  # DEBUG
                 tags.append(entry["name"])
 
             if "next" in response.links:
