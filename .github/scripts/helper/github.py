@@ -51,10 +51,14 @@ class GithubHelper:
     def get_repo_tags(
         repo_owner: str = GithubConfig.REPO_OWNER,
         repo_name: str = GithubConfig.REPO_NAME,
+        token: str = GithubConfig.TOKEN,
     ) -> List[str]:
         tags = []
         url = GithubHelper._get_base_repo_url(repo_owner, repo_name) / "tags"
-        headers = {"Accept": "application/vnd.github.v3+json"}
+        headers = {
+            "Accept": "application/vnd.github.v3+json",
+            "Authorization": f"token {token}",
+            }
 
         while True:
             response = requests.get(url, headers=headers)
@@ -82,14 +86,21 @@ class GithubHelper:
         headers = {
             "Accept": "application/vnd.github.v3+json",
             "Authorization": f"token {token}",
-        }
+            }
         params = {"state": "open"}
 
         response = requests.get(url, headers=headers, params=params)
 
         json = response.json()
 
-        for entry in json:
-            issues.append(entry)
+        if response.status_code == 200:
+            for entry in json:
+                issues.append(entry)
 
-        return issues
+            return issues
+        else:
+            print(
+                f'Error while getting the open issues. Status code: "{response.status_code}". URL: "{url}"'
+            )
+            print(json)
+            return []
