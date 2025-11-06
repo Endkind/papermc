@@ -1,0 +1,77 @@
+name: Initial Repository Setup
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - '.github/workflows/setup.yml'
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  minimal-setup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Replace placeholders in issue template
+        env:
+          OWNER: ${{ github.repository_owner }}
+          REPO: ${{ github.event.repository.name }}
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          sed -i "s|{{owner}}|$OWNER|g" .github/setup-reminder.md
+          sed -i "s|{{repo}}|$REPO|g" .github/setup-reminder.md
+          sed -i "s|{{branch}}|$BRANCH|g" .github/setup-reminder.md
+
+      - name: Create setup reminder issue
+        uses: JasonEtco/create-an-issue@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          filename: .github/setup-reminder.md
+
+      - name: Create / update default issue labels
+        shell: bash
+        run: |
+          declare -A labels=(
+            ["breaking"]="d20f48:Breaking changes or backwards-incompatible updates"
+            ["feature"]="2ecc71:New functionality or enhancements"
+            ["maintenance"]="f39c12:Codebase cleanup or non-feature updates"
+            ["performance"]="f1c40f:Performance-related improvements"
+            ["tests"]="1abc9c:Adding or updating tests"
+          )
+
+          for name in "${!labels[@]}"; do
+            IFS=':' read -r color desc <<< "${labels[$name]}"
+
+            # Erstellt das Label, fällt bei 422 (already exists) zurück auf PATCH
+            status=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
+              -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+              -H "Accept: application/vnd.github+json" \
+              -d "{\"name\":\"${name}\",\"color\":\"${color}\",\"description\":\"${desc}\"}" \
+              "https://api.github.com/repos/${{ github.repository }}/labels")
+
+            if [ "$status" = "422" ]; then
+              curl -s -X PATCH \
+                -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                -H "Accept: application/vnd.github+json" \
+                -d "{\"new_name\":\"${name}\",\"color\":\"${color}\",\"description\":\"${desc}\"}" \
+                "https://api.github.com/repos/${{ github.repository }}/labels/${name}"
+            fi
+          done
+
+      - name: Delete this workflow file
+        run: |
+          git config --global user.name "setup-bot"
+          git config --global user.email "setup@github.com"
+          git rm -f .github/workflows/setup.yml
+          git rm -f .github/setup-reminder.md
+          git commit -m "chore: remove setup workflow"
+          git push

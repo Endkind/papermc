@@ -15,7 +15,7 @@ This command starts a PaperMC server in detached mode (-d), maps port 25565 from
 ```bash
 docker volume create endkind-papermc
 
-docker run -it -d -p 25565:25565 --name endkind-papermc -v endkind-papermc:/papermc -e MAX_RAM=3G -e MINECRAFT_EULA=true --restart=always endkind/papermc:latest
+docker run -it -d -p 25565:25565 --name endkind-papermc -v endkind-papermc:/data -e MAX_RAM=3G -e MINECRAFT_EULA=true --restart=always endkind/papermc:latest
 ```
 
 ## Using Specific Versions
@@ -30,10 +30,10 @@ docker run -it -d -p 25565:25565 -e MINECRAFT_EULA=true endkind/papermc:1.20.1
 
 By specifying a version like 1.20.1, you ensure that your server runs a known and tested version of PaperMC.
 
-### All Supported Cersions
+### All Supported Versions
 
 - `latest` uses always the newest version
-- `1.21`, `1.21.1`, `1.21.3`, `1.21.4`
+- `1.21`, `1.21.1`, `1.21.3`, `1.21.4`, `1.21.5`, `1.21.6`, `1.21.7`, `1.21.8`, `1.21.9-pre2`, `1.21.9-pre3`, `1.21.9-pre4`, `1.21.9-rc1`, `1.21.9`, `1.21.10`
 - `1.20`, `1.20.1`, `1.20.2`, `1.20.4`, `1.20.5`, `1.20.6`
 - `1.19`, `1.19.1`, `1.19.2`, `1.19.3`, `1.19.4`
 - `1.18`, `1.18.1`, `1.18.2`
@@ -48,12 +48,16 @@ By specifying a version like 1.20.1, you ensure that your server runs a known an
 - `1.9.4`
 - `1.8.8`
 
+> [!CAUTION]
+> The following specific versions are not working. These versions are no longer actively updated but remain available for manual building. For more details, see the respective README files:
+> [1.12](./versions/1.12/README.md), [1.12.1](./versions/1.12.1/README.md), [1.21.9-rc1](./versions/1.21.9-rc1/README.md)
+
 ## Environment variables
 
 You can customize your PaperMC server by setting the following environment variables:
 
 - `MIN_RAM` (default: 512M) - Minimum RAM allocated for the server.
-- `MAX_RAM` (default: 1G) - Maximum RAM allocated for the server.
+- `MAX_RAM` (default: 3G) - Maximum RAM allocated for the server.
 - `MINECRAFT_EULA` (default: false) - Set to `true` to accept the Minecraft EULA.
 - `JAVA_FLAGS` - Additional Java flags generated with [flags.sh](https://flags.sh/).
 - `PAPERMC_FLAGS` (default: --nojline) - Custom PaperMC server flags.
@@ -65,7 +69,6 @@ These environment variables allow you to tailor your PaperMC server's configurat
 
 Replace `<version>` with the desired version.
 
-<!-- prettier-ignore -->
 ```bash
 docker build --build-arg PAPERMC_VERSION=<version> -t endkind/papermc:<version> .
 ```
