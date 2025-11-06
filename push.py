@@ -68,6 +68,8 @@ def push_all(versions: List[str] = discover_versions()) -> Result[None, str]:
 
     print(f"Push complete: {success_count}/{len(versions)} succeeded")
 
+    if success_count < len(versions):
+        return Err(f"Push incomplete: only {success_count}/{len(versions)} succeeded")
     return Ok(None)
 
 
