@@ -1,11 +1,11 @@
-# PaperMC - 1.7.10
+# PaperMC - 1.16.5
 
-This Docker image provides PaperMC 1.7.10 Minecraft Server. You can easily run a Minecraft server using this image.
+This Docker image provides PaperMC 1.16.5 Minecraft Server. You can easily run a Minecraft server using this image.
 
 ## Quick start
 
 ```bash
-docker run -it -d -p 25565:25565 --name endkind-papermc endkind/papermc:1.7.10
+docker run -it -d -p 25565:25565 --name endkind-papermc endkind/papermc:1.16.5
 ```
 
 ## Installation and Configuration (Recommended)
@@ -13,7 +13,7 @@ docker run -it -d -p 25565:25565 --name endkind-papermc endkind/papermc:1.7.10
 ```bash
 docker volume create endkind-papermc
 
-docker run -it -d -p 25565:25565 --name endkind-papermc -v endkind-papermc:/data -e MAX_RAM=3G --restart=always endkind/papermc:1.7.10
+docker run -it -d -p 25565:25565 --name endkind-papermc -v endkind-papermc:/data -e MAX_RAM=3G --restart=always endkind/papermc:1.16.5
 ```
 
 ## Environment variables
@@ -31,7 +31,7 @@ These environment variables allow you to tailor your PaperMC server's configurat
 ## How to build
 
 ```bash
-docker build -t endkind/papermc:1.7.10 .
+docker build -t endkind/papermc:1.16.5 .
 ```
 
 ## Additional Information
