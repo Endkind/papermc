@@ -1,0 +1,64 @@
+name: Release Build
+
+on:
+  release:
+    types: published
+  workflow_dispatch:
+  schedule:
+    - cron: '0 3 * * 1'  # Every Monday at 3 AM UTC
+
+permissions:
+  contents: write
+
+jobs:
+  dockerfile-build:
+    name: Build Dockerfiles
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get latest release tag
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        id: latest_release
+        run: |
+          set -e
+          RESPONSE=$(curl -s -w "%{http_code}" https://api.github.com/repos/${{ github.repository }}/releases/latest)
+          HTTP_STATUS=$(echo "$RESPONSE" | tail -c 4)
+          BODY=$(echo "$RESPONSE" | head -c -4)
+          if [ "$HTTP_STATUS" -ne 200 ]; then
+            echo "Error: Failed to fetch latest release (HTTP $HTTP_STATUS)"
+            exit 1
+          fi
+          LATEST_TAG=$(echo "$BODY" | jq -r '.tag_name')
+          if [ -z "$LATEST_TAG" ] || [ "$LATEST_TAG" = "null" ]; then
+            echo "Error: Could not extract tag_name from response"
+            exit 1
+          fi
+          echo "tag=$LATEST_TAG" >> $GITHUB_OUTPUT
+          echo "Latest release tag: $LATEST_TAG"
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && steps.latest_release.outputs.tag || '' }}
+
+      - name: Setup environment
+        run: |
+          python3 -m venv .venv
+
+      - name: Activate virtual environment and install dependencies
+        run: |
+          source .venv/bin/activate
+          pip install -r requirements.txt
+
+      - name: Run build script
+        run: |
+          source .venv/bin/activate
+          python build.py
+
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Run push script
+        run: |
+          source .venv/bin/activate
+          python push.py
