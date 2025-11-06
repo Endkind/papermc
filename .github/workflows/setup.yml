@@ -2,9 +2,6 @@ name: Initial Repository Setup
 
 on:
   push:
-    branches:
-      - main
-      - master
     paths:
       - '.github/workflows/setup.yml'
 
