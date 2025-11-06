@@ -66,7 +66,6 @@ def build_all(versions: List[str] = discover_versions()) -> Result[str, str]:
 
     print("\nStarting builds...\n")
 
-    successful_builds = []
     success_count = 0
 
     for version in versions:
@@ -75,7 +74,6 @@ def build_all(versions: List[str] = discover_versions()) -> Result[str, str]:
 
         if is_ok(result):
             print(f"✅ {result.unwrap()}")
-            successful_builds.append(version)
             success_count += 1
         else:
             print(f"❌ {result.unwrap_err()}")
