@@ -68,6 +68,8 @@ def push_all(versions: List[str] = discover_versions()) -> Result[None, str]:
 
     print(f"Push complete: {success_count}/{len(versions)} succeeded")
 
+    return Ok(None)
+
 
 if __name__ == "__main__":
     main()
