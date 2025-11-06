@@ -8,8 +8,12 @@ from utils import discover_versions
 
 def main():
     result = push_all()
-    if is_err(result):
+
+    if is_ok(result):
+        print(f"Push process succeeded: {result.unwrap()}")
+    elif is_err(result):
         print(f"Push process failed: {result.unwrap_err()}")
+        exit(1)
 
 
 def push(tag: str) -> Result[str, str]:
@@ -41,7 +45,7 @@ def push(tag: str) -> Result[str, str]:
         return Err(f"Unexpected error: {str(e)}")
 
 
-def push_all(versions: List[str] = discover_versions()) -> Result[None, str]:
+def push_all(versions: List[str] = discover_versions()) -> Result[str, str]:
     """
     Push Docker images based on successful builds from manifest.
     """
@@ -66,11 +70,9 @@ def push_all(versions: List[str] = discover_versions()) -> Result[None, str]:
             print(f"❌ {result.unwrap_err()}")
         print()
 
-    print(f"Push complete: {success_count}/{len(versions)} succeeded")
-
     if success_count < len(versions):
         return Err(f"Push incomplete: only {success_count}/{len(versions)} succeeded")
-    return Ok(None)
+    return Ok(f"Push complete: {success_count}/{len(versions)} succeeded")
 
 
 if __name__ == "__main__":

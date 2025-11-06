@@ -9,8 +9,12 @@ from utils import discover_versions
 
 def main():
     result = build_all()
-    if is_err(result):
+
+    if is_ok(result):
+        print(f"Build process succeeded: {result.unwrap()}")
+    elif is_err(result):
         print(f"Build process failed: {result.unwrap_err()}")
+        exit(1)
 
 
 def build(tag: str) -> Result[str, str]:
@@ -48,7 +52,7 @@ def build(tag: str) -> Result[str, str]:
         return Err(f"Unexpected error: {str(e)}")
 
 
-def build_all(versions: List[str] = discover_versions()) -> Result[None, str]:
+def build_all(versions: List[str] = discover_versions()) -> Result[str, str]:
     """
     Build all available Docker images by auto-discovering available configurations.
     """
@@ -77,9 +81,9 @@ def build_all(versions: List[str] = discover_versions()) -> Result[None, str]:
             print(f"❌ {result.unwrap_err()}")
         print()
 
-    print(f"Build complete: {success_count}/{len(versions)} succeeded")
-
-    return Ok(None)
+    if success_count < len(versions):
+        return Err(f"Build incomplete: only {success_count}/{len(versions)} succeeded")
+    return Ok(f"Build complete: {success_count}/{len(versions)} succeeded")
 
 
 if __name__ == "__main__":
