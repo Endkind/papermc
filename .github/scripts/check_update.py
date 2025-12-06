@@ -14,7 +14,7 @@ def main():
     for papermc_api_paper_version in all_papermc_api_paper_versions:
         if papermc_api_paper_version not in all_local_versions:
             issue_title = f"New PaperMC version {papermc_api_paper_version}"
-            if not issue_title in open_gh_issue_titles:
+            if issue_title not in open_gh_issue_titles:
                 GitHubAPIUtils.create_issue(
                     title=issue_title,
                     body=f"Version {papermc_api_paper_version} is not supported by this repository yet. Please add support for this version.",
