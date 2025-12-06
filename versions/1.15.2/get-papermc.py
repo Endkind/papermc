@@ -4,6 +4,7 @@ import argparse
 import os
 
 import requests
+from result import Err, Ok, Result, is_err
 
 
 def main():
@@ -34,16 +35,36 @@ def main():
 
     args = parser.parse_args()
 
-    version = args.version if args.version != "latest" else get_latest_version()
-    build = args.build if args.build != "latest" else get_latest_build(version)
+    if args.version == "latest":
+        version_result = get_latest_version()
+        if is_err(version_result):
+            print(f"Error: {version_result.unwrap_err()}")
+            exit(1)
+        version = version_result.unwrap()
+    else:
+        version = args.version
+
+    if args.build == "latest":
+        build_result = get_latest_build(version)
+        if is_err(build_result):
+            print(f"Error: {build_result.unwrap_err()}")
+            exit(1)
+        build = build_result.unwrap()
+    else:
+        build = args.build
 
     print(f"Version: {version}")
     print(f"Build: {build}")
 
-    download_papermc(version, build, args.output)
+    download_result = download_papermc(version, build, args.output)
+    if is_err(download_result):
+        print(f"Error: {download_result.unwrap_err()}")
+        exit(1)
 
 
-def download_papermc(version: str, build: str, output: str = "server.jar") -> None:
+def download_papermc(
+    version: str, build: str, output: str = "server.jar"
+) -> Result[None, str]:
     base_url = "https://api.papermc.io/v2/projects/paper"
     download_url = f"{base_url}/versions/{version}/builds/{build}/downloads/paper-{version}-{build}.jar"
 
@@ -59,35 +80,40 @@ def download_papermc(version: str, build: str, output: str = "server.jar") -> No
             f.write(response.content)
 
         print(f"Downloaded: {os.path.basename(output)}")
+        return Ok(None)
     except Exception as e:
-        print(f"Error downloading: {e}")
-        exit(1)
+        return Err(f"Error downloading: {e}")
 
 
-def get_latest_version() -> str:
+def get_latest_version() -> Result[str, str]:
     base_url = "https://api.papermc.io/v2/projects/paper"
 
     try:
         response = requests.get(base_url)
         response.raise_for_status()
         data = response.json()
-        return data["versions"][-1]
+        versions = data["versions"]
+
+        for version in reversed(versions):
+            build_result = get_latest_build(version)
+            if not is_err(build_result):
+                return Ok(version)
+
+        return Err("No version with available builds found")
     except Exception as e:
-        print(f"Error getting latest version: {e}")
-        exit(1)
+        return Err(f"Error getting latest version: {e}")
 
 
-def get_latest_build(version: str) -> str:
+def get_latest_build(version: str) -> Result[str, str]:
     base_url = "https://api.papermc.io/v2/projects/paper"
 
     try:
         response = requests.get(f"{base_url}/versions/{version}")
         response.raise_for_status()
         data = response.json()
-        return str(data["builds"][-1])
+        return Ok(str(data["builds"][-1]))
     except Exception as e:
-        print(f"Error getting latest build for version {version}: {e}")
-        exit(1)
+        return Err(f"Error getting latest build for version {version}: {e}")
 
 
 if __name__ == "__main__":

@@ -1,5 +1,6 @@
 import os
 import subprocess
+import sys
 from typing import List
 
 from result import Err, Ok, Result, is_err, is_ok
@@ -8,7 +9,11 @@ from utils import discover_versions
 
 
 def main():
-    result = build_all()
+    if len(sys.argv) > 1:
+        versions = sys.argv[1:]
+        result = build_all(versions)
+    else:
+        result = build_all()
 
     if is_ok(result):
         print(f"Build process succeeded: {result.unwrap()}")
