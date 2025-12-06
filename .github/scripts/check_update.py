@@ -1,25 +1,28 @@
-from helper import GithubHelper, PaperMCHelper
+from enums import PaperMCAPIProject
+
+from utils import GitHubAPIUtils, PaperMCAPIUtils, VersionUtils
+
+
+def main():
+    all_papermc_api_paper_versions = PaperMCAPIUtils.get_all_versions(
+        PaperMCAPIProject.PAPER
+    )
+    all_local_versions = VersionUtils.get_all_local_versions()
+    open_gh_issues = GitHubAPIUtils.get_open_issues().unwrap_or([])
+    open_gh_issue_titles = [issue["title"] for issue in open_gh_issues]
+
+    for papermc_api_paper_version in all_papermc_api_paper_versions:
+        if papermc_api_paper_version not in all_local_versions:
+            issue_title = f"New PaperMC version {papermc_api_paper_version}"
+            if issue_title not in open_gh_issue_titles:
+                GitHubAPIUtils.create_issue(
+                    title=issue_title,
+                    body=f"Version {papermc_api_paper_version} is not supported by this repository yet. Please add support for this version.",
+                    assignees=["Endkind"],
+                    labels=["update"],
+                )
+                print(papermc_api_paper_version)
+
 
 if __name__ == "__main__":
-    tags = GithubHelper.get_repo_tags()
-    supportet_versions = []
-    papermc_versions = PaperMCHelper.get_project_versions("paper")
-
-    for i, tag in enumerate(tags):
-        supportet_versions.append(tag[1:])
-
-    for version in papermc_versions:
-        if version not in supportet_versions:
-            title = f"New PaperMC version {version}!"
-            open_issues = GithubHelper.get_open_issues()
-            create_issue = True
-
-            for issue in open_issues:
-                if title in issue["title"]:
-                    print(f"Version {version} is already reported!")
-                    create_issue = False
-                    break
-
-            if create_issue:
-                body = f"Version {version} is not supported by this repository!"
-                GithubHelper.create_issue(title, body, ["Endkind"], ["update"])
+    main()
