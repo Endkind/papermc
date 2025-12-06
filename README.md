@@ -33,7 +33,7 @@ By specifying a version like 1.20.1, you ensure that your server runs a known an
 ### All Supported Versions
 
 - `latest` uses always the newest version
-- `1.21`, `1.21.1`, `1.21.3`, `1.21.4`, `1.21.5`, `1.21.6`, `1.21.7`, `1.21.8`, `1.21.9-pre2`, `1.21.9-pre3`, `1.21.9-pre4`, `1.21.9-rc1`, `1.21.9`, `1.21.10`
+- `1.21`, `1.21.1`, `1.21.3`, `1.21.4`, `1.21.5`, `1.21.6`, `1.21.7`, `1.21.8`, `1.21.9-pre2`, `1.21.9-pre3`, `1.21.9-pre4`, `1.21.9-rc1`, `1.21.9`, `1.21.10`, `1.21.11-rc2`
 - `1.20`, `1.20.1`, `1.20.2`, `1.20.4`, `1.20.5`, `1.20.6`
 - `1.19`, `1.19.1`, `1.19.2`, `1.19.3`, `1.19.4`
 - `1.18`, `1.18.1`, `1.18.2`
@@ -50,7 +50,7 @@ By specifying a version like 1.20.1, you ensure that your server runs a known an
 
 > [!CAUTION]
 > The following specific versions are not working. These versions are no longer actively updated but remain available for manual building. For more details, see the respective README files:
-> [1.12](./versions/1.12/README.md), [1.12.1](./versions/1.12.1/README.md), [1.21.9-rc1](./versions/1.21.9-rc1/README.md)
+> [1.12](./versions/1.12/README.md), [1.12.1](./versions/1.12.1/README.md), [1.21.9-rc1](./versions/1.21.9-rc1/README.md), [1.21.11-rc2](./versions/1.21.11-rc2/README.md)
 
 ## Environment variables
 
