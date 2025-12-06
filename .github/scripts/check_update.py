@@ -12,7 +12,7 @@ def main():
     open_gh_issue_titles = [issue["title"] for issue in open_gh_issues]
 
     for papermc_api_paper_version in all_papermc_api_paper_versions:
-        if not papermc_api_paper_version in all_local_versions:
+        if papermc_api_paper_version not in all_local_versions:
             issue_title = f"New PaperMC version {papermc_api_paper_version}"
             if not issue_title in open_gh_issue_titles:
                 GitHubAPIUtils.create_issue(
