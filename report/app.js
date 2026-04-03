@@ -256,17 +256,33 @@ function formatLastCheck(generatedAt) {
 }
 
 function renderRows(entries) {
-    const rows = entries.map(([version, status]) => {
-        return `
-            <tr class="transition hover:bg-slate-50/80 dark:hover:bg-slate-800/60">
-                <td class="px-4 py-3 font-mono text-sm text-slate-900 dark:text-slate-100">${version}</td>
-        <td class="px-4 py-3">${createStatusBadge(status)}</td>
-                <td class="px-4 py-3 text-slate-700 dark:text-slate-200">${createVersionLink(version, status)}</td>
-      </tr>
-    `;
+    tableBody.textContent = "";
+
+    const fragment = document.createDocumentFragment();
+
+    entries.forEach(([version, status]) => {
+        const row = document.createElement("tr");
+        row.className = "transition hover:bg-slate-50/80 dark:hover:bg-slate-800/60";
+
+        const versionCell = document.createElement("td");
+        versionCell.className = "px-4 py-3 font-mono text-sm text-slate-900 dark:text-slate-100";
+        versionCell.textContent = version;
+
+        const statusCell = document.createElement("td");
+        statusCell.className = "px-4 py-3";
+        statusCell.innerHTML = createStatusBadge(status);
+
+        const linkCell = document.createElement("td");
+        linkCell.className = "px-4 py-3 text-slate-700 dark:text-slate-200";
+        linkCell.innerHTML = createVersionLink(version, status);
+
+        row.appendChild(versionCell);
+        row.appendChild(statusCell);
+        row.appendChild(linkCell);
+        fragment.appendChild(row);
     });
 
-    tableBody.innerHTML = rows.join("");
+    tableBody.appendChild(fragment);
 }
 
 function setupDataTable() {
