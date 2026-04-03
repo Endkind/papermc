@@ -315,7 +315,7 @@ async function loadData() {
 
         tableBody.innerHTML = `
       <tr>
-        <td colspan="3" class="px-4 py-5 text-sm text-rose-700">Failed to load report/version_support_status.json. Please reload the page.</td>
+        <td colspan="3" class="px-4 py-5 text-sm text-rose-700">Failed to load version_support_status.json. Please reload the page.</td>
       </tr>
     `;
         loadState.textContent = "Loading failed.";
