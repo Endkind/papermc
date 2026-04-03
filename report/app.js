@@ -132,6 +132,14 @@ function setupScrollTopButton() {
         const shouldShow = window.scrollY > 280;
         scrollTopButton.classList.toggle("opacity-0", !shouldShow);
         scrollTopButton.classList.toggle("pointer-events-none", !shouldShow);
+
+        if (shouldShow) {
+            scrollTopButton.removeAttribute("aria-hidden");
+            scrollTopButton.removeAttribute("tabindex");
+        } else {
+            scrollTopButton.setAttribute("aria-hidden", "true");
+            scrollTopButton.setAttribute("tabindex", "-1");
+        }
     };
 
     scrollTopButton.addEventListener("click", () => {
