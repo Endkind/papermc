@@ -18,15 +18,9 @@ class VersionUtils:
         current_path = Path(__file__).parent
         local_version_path = current_path.parent.parent.parent / "versions"
 
-        disabled_versions = []
-
-        for entry in local_version_path.iterdir():
-            if entry.is_dir():
-                disabled = False
-                for version_entry in entry.iterdir():
-                    if version_entry.is_file() and version_entry.name == ".disabled":
-                        disabled = True
-                        break
-                if disabled:
-                    disabled_versions.append(entry.name)
+        disabled_versions = [
+            entry.name
+            for entry in local_version_path.iterdir()
+            if entry.is_dir() and (entry / ".disabled").is_file()
+        ]
         return disabled_versions
