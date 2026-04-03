@@ -324,18 +324,18 @@ async function loadData() {
             throw new Error(`HTTP ${response.status}`);
         }
 
-                const payload = await response.json();
-                const { entries, counts, generatedAt } = parsePayload(payload);
+        const payload = await response.json();
+        const { entries, counts, generatedAt } = parsePayload(payload);
 
         renderRows(entries);
-                setupDataTable();
-                setCountsFromPayload(entries, counts);
-                loadState.textContent = formatLastCheck(generatedAt);
+        setupDataTable();
+        setCountsFromPayload(entries, counts);
+        loadState.textContent = formatLastCheck(generatedAt);
     } catch (error) {
-                if (versionsDataTable) {
-                        versionsDataTable.destroy();
-                        versionsDataTable = null;
-                }
+        if (versionsDataTable) {
+            versionsDataTable.destroy();
+            versionsDataTable = null;
+        }
 
         tableBody.innerHTML = `
       <tr>
