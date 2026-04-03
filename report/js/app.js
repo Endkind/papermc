@@ -111,15 +111,17 @@ function setupTheme() {
         });
     }
 
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    if (mediaQuery && typeof mediaQuery.addEventListener === "function") {
-        mediaQuery.addEventListener("change", (event) => {
-            if (!getStoredTheme()) {
-                const nextSystemTheme = event.matches ? "dark" : "light";
-                applyTheme(nextSystemTheme);
-                updateThemeControlState(nextSystemTheme, true);
-            }
-        });
+    if (typeof window.matchMedia === "function") {
+        const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+        if (mediaQuery && typeof mediaQuery.addEventListener === "function") {
+            mediaQuery.addEventListener("change", (event) => {
+                if (!getStoredTheme()) {
+                    const nextSystemTheme = event.matches ? "dark" : "light";
+                    applyTheme(nextSystemTheme);
+                    updateThemeControlState(nextSystemTheme, true);
+                }
+            });
+        }
     }
 }
 
