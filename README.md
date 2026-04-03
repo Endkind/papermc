@@ -30,10 +30,13 @@ docker run -it -d -p 25565:25565 -e MINECRAFT_EULA=true endkind/papermc:1.20.1
 
 By specifying a version like 1.20.1, you ensure that your server runs a known and tested version of PaperMC.
 
-### All Supported Versions
+### Versions Overview
+
+The current support status for all versions is also available on the live status page:
+[PaperMC Versions Overview](https://endkind.github.io/papermc/)
 
 - `latest` uses always the newest version
-- `1.21`, `1.21.1`, `1.21.3`, `1.21.4`, `1.21.5`, `1.21.6`, `1.21.7`, `1.21.8`, `1.21.9-pre2`, `1.21.9-pre3`, `1.21.9-pre4`, `1.21.9-rc1`, `1.21.9`, `1.21.10`, `1.21.11-pre3`, `1.21.11-pre4` `1.21.11-pre5`, `1.21.11-rc1`, `1.21.11-rc2`, `1.21.11-rc3`, `1.21.11`
+- `1.21`, `1.21.1`, `1.21.3`, `1.21.4`, `1.21.5`, `1.21.6`, `1.21.7`, `1.21.8`, `1.21.9-pre2`, `1.21.9-pre3`, `1.21.9-pre4`, `1.21.9-rc1`, `1.21.9`, `1.21.10`, `1.21.11-pre3`, `1.21.11-pre4`, `1.21.11-pre5`, `1.21.11-rc1`, `1.21.11-rc2`, `1.21.11-rc3`, `1.21.11`
 - `1.20`, `1.20.1`, `1.20.2`, `1.20.4`, `1.20.5`, `1.20.6`
 - `1.19`, `1.19.1`, `1.19.2`, `1.19.3`, `1.19.4`
 - `1.18`, `1.18.1`, `1.18.2`
@@ -51,6 +54,8 @@ By specifying a version like 1.20.1, you ensure that your server runs a known an
 > [!CAUTION]
 > The following specific versions are not working. These versions are no longer actively updated but remain available for manual building. For more details, see the respective README files:
 > [1.12](./versions/1.12/README.md), [1.12.1](./versions/1.12.1/README.md), [1.21.9-rc1](./versions/1.21.9-rc1/README.md), [1.21.11-rc1](./versions/1.21.11-rc1/README.md), [1.21.11-rc2](./versions/1.21.11-rc2/README.md), [1.21.11-rc3](./versions/1.21.11-rc3/README.md)
+>
+> For the latest support overview, check [PaperMC Versions Overview](https://endkind.github.io/papermc/).
 
 ## Environment variables
 
@@ -78,6 +83,7 @@ docker build --build-arg PAPERMC_VERSION=<version> -t endkind/papermc:<version> 
 - [GitHub Repository](https://github.com/Endkind/papermc)
 - [Docker Repository](https://hub.docker.com/r/endkind/papermc)
 - [Docker Compose Example](https://github.com/Endkind/papermc/blob/main/docker-compose.yml)
+- [PaperMC Versions Overview](https://endkind.github.io/papermc/)
 - [Visit our website](https://www.endkind.net) for more information about our projects and services.
 - Connect to our Minecraft server (crossplay) at `mc.endkind.net` and start your adventure!
 
