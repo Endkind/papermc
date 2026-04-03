@@ -1,7 +1,7 @@
 # PaperMC - 1.12.1
 
 > [!CAUTION]
-> This version is not bootable because the minecraft_server.1.12.1.jar cannot be downloaded from Mojang's S3 bucket by PaperMC. This version is no longer actively updated but remains available for manual building.
+> This version is not bootable because the `minecraft_server.1.12.1.jar` cannot be downloaded from Mojang's S3 bucket by PaperMC. This version is no longer actively updated but remains available for manual building.
 
 This Docker image provides PaperMC 1.12.1 Minecraft Server. You can easily run a Minecraft server using this image.
 
