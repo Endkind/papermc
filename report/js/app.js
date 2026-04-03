@@ -23,7 +23,7 @@ const URLS = {
 };
 
 const STORAGE_KEYS = {
-    theme: "papermc-theme"
+    theme: "theme"
 };
 
 const tableBody = document.getElementById("version-table");
