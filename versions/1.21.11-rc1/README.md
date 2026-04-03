@@ -3,7 +3,7 @@
 This Docker image provides PaperMC 1.21.11-rc1 Minecraft Server. You can easily run a Minecraft server using this image.
 
 > [!CAUTION]
-> This version is not bootable because PaperMC cannot be downloaded from the PaperMC API. This version is no longer actively updated but remains available for manual building.
+> This version is not bootable because `paper-1.21.11-rc1-{build}.jar` cannot be downloaded from the PaperMC API. This version is no longer actively updated but remains available for manual building.
 
 ## Quick start
 
