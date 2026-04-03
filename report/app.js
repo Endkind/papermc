@@ -1,19 +1,19 @@
 const STATUS_META = {
     supported: {
         label: "supported",
-        classes: "border-support-border bg-support-bg text-support-fg dark:border-emerald-400/40 dark:bg-emerald-500/15 dark:text-emerald-200"
+        classes: "border-support-border bg-support-bg/50 text-support-fg dark:border-emerald-400/40 dark:bg-emerald-500/15 dark:text-emerald-200"
     },
     disabled: {
         label: "disabled",
-        classes: "border-disabled-border bg-disabled-bg text-disabled-fg dark:border-amber-300/40 dark:bg-amber-500/15 dark:text-amber-200"
+        classes: "border-disabled-border bg-disabled-bg/50 text-disabled-fg dark:border-amber-300/40 dark:bg-amber-500/15 dark:text-amber-200"
     },
     unsupported: {
         label: "unsupported",
-        classes: "border-unsupported-border bg-unsupported-bg text-unsupported-fg dark:border-rose-300/40 dark:bg-rose-500/15 dark:text-rose-200"
+        classes: "border-unsupported-border bg-unsupported-bg/50 text-unsupported-fg dark:border-rose-300/40 dark:bg-rose-500/15 dark:text-rose-200"
     },
     unknown: {
         label: "unknown",
-        classes: "border-unknown-border bg-unknown-bg text-unknown-fg dark:border-slate-400/40 dark:bg-slate-500/15 dark:text-slate-200"
+        classes: "border-unknown-border bg-unknown-bg/50 text-unknown-fg dark:border-slate-400/40 dark:bg-slate-500/15 dark:text-slate-200"
     }
 };
 
