@@ -12,16 +12,41 @@ class PaperMCAPIUtils:
 
         url = base_url / project.value
 
-        response = requests.get(url.__str__())
+        try:
+            response = requests.get(url.__str__())
+        except requests.RequestException as error:
+            return Err(
+                f"Failed to fetch versions for project {project.value}. Request error: {error}"
+            )
 
         if response.status_code != 200:
             return Err(
                 f"Failed to fetch versions for project {project.value}. Status code: {response.status_code}"
             )
 
+        try:
+            payload = response.json()
+        except ValueError as error:
+            return Err(
+                f"Failed to fetch versions for project {project.value}. Invalid JSON response: {error}"
+            )
+
+        versions_by_release = payload.get("versions")
+        if not isinstance(versions_by_release, dict):
+            return Err(
+                f"Failed to fetch versions for project {project.value}. Invalid response shape: missing or invalid 'versions' object"
+            )
+
         all_versions = []
 
-        for _, versions in response.json()["versions"].items():
+        for release, versions in versions_by_release.items():
+            if not isinstance(versions, list) or not all(
+                isinstance(version, str) for version in versions
+            ):
+                return Err(
+                    f"Failed to fetch versions for project {project.value}. Invalid versions list for release '{release}'"
+                )
+
             all_versions.extend(versions)
 
         return Ok(all_versions)
