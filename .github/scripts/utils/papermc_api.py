@@ -13,4 +13,9 @@ class PaperMCAPIUtils:
 
         response = requests.get(url.__str__())
 
-        return response.json()["versions"]
+        all_versions = []
+
+        for _, versions in response.json()["versions"].items():
+            all_versions.extend(versions)
+
+        return all_versions
