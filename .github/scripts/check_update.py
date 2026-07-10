@@ -19,6 +19,14 @@ def main():
     open_gh_issue_titles = [issue["title"] for issue in open_gh_issues]
     version_support_status: Dict[str, VersionSupportStatus] = {}
 
+    if all_papermc_api_paper_versions.is_err():
+        print(
+            f"Failed to fetch PaperMC versions: {all_papermc_api_paper_versions.unwrap_err()}"
+        )
+        raise SystemExit(1)
+
+    all_papermc_api_paper_versions = all_papermc_api_paper_versions.unwrap()
+
     for papermc_api_paper_version in all_papermc_api_paper_versions:
         if papermc_api_paper_version in all_local_disabled_versions:
             current_status = VersionSupportStatus.DISABLED
