@@ -23,7 +23,7 @@ def main():
         print(
             f"Failed to fetch PaperMC versions: {all_papermc_api_paper_versions.unwrap_err()}"
         )
-        exit(1)
+        raise SystemExit(1)
 
     all_papermc_api_paper_versions = all_papermc_api_paper_versions.unwrap()
 
