@@ -14,10 +14,15 @@ FROM eclipse-temurin:11 AS runtime
 
 LABEL Author="Endkind Ender <endkind.ender@endkind.net>"
 
-COPY entrypoint.sh /endkind/entrypoint.sh
+RUN groupadd --system --gid 10001 papermc \
+    && useradd --system --uid 10001 --gid papermc --home-dir /data --shell /usr/sbin/nologin papermc \
+    && mkdir -p /endkind /data \
+    && chown -R papermc:papermc /endkind /data
+
+COPY --chown=papermc:papermc entrypoint.sh /endkind/entrypoint.sh
 RUN chmod +x /endkind/entrypoint.sh
 
-COPY --from=build /endkind/server.jar /endkind/server.jar
+COPY --from=build --chown=papermc:papermc /endkind/server.jar /endkind/server.jar
 
 WORKDIR /data
 VOLUME /data
@@ -26,5 +31,7 @@ ENV MIN_RAM=512M
 ENV MAX_RAM=3G
 ENV JAVA_FLAGS=""
 ENV PAPERMC_FLAGS="--nojline"
+
+USER papermc
 
 ENTRYPOINT [ "/endkind/entrypoint.sh" ]
