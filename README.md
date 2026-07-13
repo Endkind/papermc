@@ -54,7 +54,7 @@ The current support status for all versions is also available on the live status
 
 > [!CAUTION]
 > The following specific versions are not working. These versions are no longer actively updated but remain available for manual building. For more details, see the respective README files:
-> [1.12](./versions/1.12/README.md), [1.12.1](./versions/1.12.1/README.md), [1.21.9-rc1](./versions/1.21.9-rc1/README.md), [1.21.11-rc1](./versions/1.21.11-rc1/README.md), [1.21.11-rc2](./versions/1.21.11-rc2/README.md), [1.21.11-rc3](./versions/1.21.11-rc3/README.md)
+> [1.12](./versions/1.12/README.md), [1.12.1](./versions/1.12.1/README.md)
 >
 > For the latest support overview, check [PaperMC Versions Overview](https://endkind.github.io/papermc/).
 
