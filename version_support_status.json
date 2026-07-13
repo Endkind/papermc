@@ -1,9 +1,9 @@
 {
-    "generated_at": "2026-07-12T03:38:57.925612Z",
+    "generated_at": "2026-07-13T00:56:25.720292Z",
     "counts": {
-        "supported": 60,
+        "supported": 64,
         "unsupported": 0,
-        "disabled": 6
+        "disabled": 2
     },
     "versions": {
         "26.2": "supported",
@@ -11,15 +11,15 @@
         "26.1.2": "supported",
         "26.1.1": "supported",
         "1.21.11": "supported",
-        "1.21.11-rc3": "disabled",
-        "1.21.11-rc2": "disabled",
-        "1.21.11-rc1": "disabled",
+        "1.21.11-rc3": "supported",
+        "1.21.11-rc2": "supported",
+        "1.21.11-rc1": "supported",
         "1.21.11-pre5": "supported",
         "1.21.11-pre4": "supported",
         "1.21.11-pre3": "supported",
         "1.21.10": "supported",
         "1.21.9": "supported",
-        "1.21.9-rc1": "disabled",
+        "1.21.9-rc1": "supported",
         "1.21.9-pre4": "supported",
         "1.21.9-pre3": "supported",
         "1.21.9-pre2": "supported",
