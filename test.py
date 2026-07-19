@@ -8,6 +8,7 @@ from uuid import UUID, uuid4
 from docker.models.containers import Container
 from result import Err, Ok, Result, is_err, is_ok
 
+from config.docker import DockerConfig
 from config.project import ProjectConfig
 from config.test import TestConfig
 from utils import DockerHelper, MinecraftHelper, discover_versions
@@ -56,7 +57,7 @@ def test(tag: str) -> Result[str, str]:
         path = TestConfig.TEST_PATH / str(uuid)
 
     _setup_test_environment(path)
-    image_name = f"endkind/{ProjectConfig.PROJECT}:{tag}"
+    image_name = f"endkind/{DockerConfig.IMAGE_NAME}:{tag}"
 
     container = DockerHelper.create(
         image_name,
@@ -111,14 +112,14 @@ def test_all(versions: List[str] | None = None) -> Result[str, str]:
 
     print(f"Found {len(versions)} versions:")
     for version in versions:
-        print(f" - {ProjectConfig.PROJECT}:{version}")
+        print(f" - {DockerConfig.IMAGE_NAME}:{version}")
 
     print("\nStarting tests...\n")
 
     success_count = 0
 
     for version in versions:
-        print(f"--- Testing {ProjectConfig.PROJECT}:{version} ---")
+        print(f"--- Testing {DockerConfig.IMAGE_NAME}:{version} ---")
         result = test(version)
 
         if is_ok(result):

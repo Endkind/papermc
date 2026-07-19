@@ -3,7 +3,7 @@ from typing import List
 
 from result import Err, Ok, Result, is_err, is_ok
 
-from config.project import ProjectConfig
+from config.docker import DockerConfig
 from utils import discover_versions
 
 
@@ -28,7 +28,7 @@ def push(tag: str) -> Result[str, str]:
         Result[str, str]: Ok with success message or Err with error message
     """
     try:
-        image_name = f"endkind/{ProjectConfig.PROJECT}:{tag}"
+        image_name = f"endkind/{DockerConfig.IMAGE_NAME}:{tag}"
 
         cmd = ["docker", "push", image_name]
 
@@ -55,13 +55,13 @@ def push_all(versions: List[str] = discover_versions()) -> Result[str, str]:
 
     print(f"Found {len(versions)} build configurations:")
     for version in versions:
-        print(f"- {ProjectConfig.PROJECT}:{version}")
+        print(f"- {DockerConfig.IMAGE_NAME}:{version}")
 
     print("\nStarting pushes...\n")
 
     success_count = 0
     for version in versions:
-        print(f"--- Pushing {ProjectConfig.PROJECT}:{version} ---")
+        print(f"--- Pushing {DockerConfig.IMAGE_NAME}:{version} ---")
         result = push(version)
 
         if is_ok(result):
