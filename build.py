@@ -47,7 +47,15 @@ def build(tag: str) -> Result[str, str]:
         print(f"Build context: {context_path}")
         print(f"Command: {' '.join(cmd)}")
 
-        result = subprocess.run(cmd, capture_output=True, text=True, check=True)
+        subprocess.run(cmd, capture_output=True, text=True, check=True)
+
+        if len(DockerConfig.ALT_IMAGE_NAME) > 0:
+            for alt_name in DockerConfig.ALT_IMAGE_NAME:
+                alt_image_name = f"endkind/{alt_name}:{tag}"
+                tag_cmd = ["docker", "tag", image_name, alt_image_name]
+                print(f"Tagging Docker image: {alt_image_name}")
+                print(f"Command: {' '.join(tag_cmd)}")
+                subprocess.run(tag_cmd, capture_output=True, text=True, check=True)
 
         return Ok(f"Docker image '{image_name}' built successfully")
 

@@ -35,7 +35,15 @@ def push(tag: str) -> Result[str, str]:
         print(f"Pushing Docker image: {image_name}")
         print(f"Command: {' '.join(cmd)}")
 
-        result = subprocess.run(cmd, capture_output=True, text=True, check=True)
+        subprocess.run(cmd, capture_output=True, text=True, check=True)
+
+        if len(DockerConfig.ALT_IMAGE_NAME) > 0:
+            for alt_name in DockerConfig.ALT_IMAGE_NAME:
+                alt_image_name = f"endkind/{alt_name}:{tag}"
+                push_cmd = ["docker", "push", alt_image_name]
+                print(f"Pushing Docker image: {alt_image_name}")
+                print(f"Command: {' '.join(push_cmd)}")
+                subprocess.run(push_cmd, capture_output=True, text=True, check=True)
 
         return Ok(f"Docker image '{image_name}' pushed successfully")
 

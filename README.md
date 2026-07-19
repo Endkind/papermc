@@ -30,6 +30,14 @@ docker run -it -d -p 25565:25565 -e MINECRAFT_EULA=true endkind/papermc:1.20.1
 
 By specifying a version like 1.20.1, you ensure that your server runs a known and tested version of PaperMC.
 
+### Alternative Repository Name
+
+The image is also available under `endkind/paper`.
+
+This repository name was created accidentally during a configuration change. Since it received active usage before the issue was noticed, it remains available and continues to receive the same image updates for compatibility.
+
+The primary and recommended repository is `endkind/papermc`.
+
 ### Versions Overview
 
 The current support status for all versions is also available on the live status page:
