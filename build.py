@@ -5,7 +5,7 @@ from typing import List
 
 from result import Err, Ok, Result, is_err, is_ok
 
-from config.project import ProjectConfig
+from config.docker import DockerConfig
 from utils import discover_versions
 
 
@@ -34,7 +34,7 @@ def build(tag: str) -> Result[str, str]:
         Result[str, str]: Ok with success message or Err with error message
     """
     try:
-        image_name = f"endkind/{ProjectConfig.PROJECT}:{tag}"
+        image_name = f"endkind/{DockerConfig.IMAGE_NAME}:{tag}"
 
         context_path = f"./versions/{tag}"
 
@@ -68,14 +68,14 @@ def build_all(versions: List[str] = discover_versions()) -> Result[str, str]:
 
     print(f"Found {len(versions)} build configurations:")
     for version in versions:
-        print(f" - {ProjectConfig.PROJECT}:{version}")
+        print(f" - {DockerConfig.IMAGE_NAME}:{version}")
 
     print("\nStarting builds...\n")
 
     success_count = 0
 
     for version in versions:
-        print(f"--- Building {ProjectConfig.PROJECT}:{version} ---")
+        print(f"--- Building {DockerConfig.IMAGE_NAME}:{version} ---")
         result = build(version)
 
         if is_ok(result):
