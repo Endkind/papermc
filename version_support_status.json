@@ -1,13 +1,13 @@
 {
-    "generated_at": "2026-09-17T00:50:29.863725Z",
+    "generated_at": "2026-09-17T09:19:54.422645Z",
     "counts": {
-        "supported": 65,
-        "unsupported": 1,
+        "supported": 66,
+        "unsupported": 0,
         "disabled": 2
     },
     "versions": {
         "26.3": "supported",
-        "26.3-rc-3": "unsupported",
+        "26.3-rc-3": "supported",
         "26.2": "supported",
         "26.2-rc-2": "supported",
         "26.1.2": "supported",
