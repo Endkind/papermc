@@ -101,7 +101,7 @@ def build_all(versions: List[str] = discover_versions()) -> Result[str, str]:
         logging.debug(f" - {DockerConfig.IMAGE_NAME}:{version}")
     logging.debug("")
 
-    logging.info("Starting builds...")
+    logging.info("Starting builds ...")
     logging.info("")
 
     success_count = 0
@@ -112,6 +112,7 @@ def build_all(versions: List[str] = discover_versions()) -> Result[str, str]:
 
         if is_ok(result):
             logging.info(f"✅ {result.unwrap()}")
+            logging.info("")
             success_count += 1
         else:
             logging.error(f"❌ {result.unwrap_err()}")

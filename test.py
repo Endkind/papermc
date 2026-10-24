@@ -136,7 +136,8 @@ def test_all(versions: List[str] | None = None) -> Result[str, str]:
         logging.debug(f" - {DockerConfig.IMAGE_NAME}:{version}")
     logging.debug("")
 
-    logging.info("Starting tests...")
+    logging.info("Starting tests ...")
+    logging.info("")
 
     success_count = 0
 

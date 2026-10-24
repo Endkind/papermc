@@ -121,7 +121,7 @@ def get_args() -> argparse.Namespace:
         "--java-version",
         "-j",
         type=str,
-        default="21",
+        default="25",
         help="The Java version to use for the new version.",
     )
 
