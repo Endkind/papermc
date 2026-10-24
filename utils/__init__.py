@@ -1,6 +1,8 @@
 import os
+from pathlib import Path
 from typing import List, Tuple
 
+from .argparser import get_default_argparse
 from .docker import DockerHelper
 from .minecraft import MinecraftHelper
 from .validation import validation_error_to_result
@@ -36,8 +38,7 @@ def _parse_version_key(tag: str) -> Tuple:
 
 def discover_versions() -> List[str]:
     versions = []
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    versions_dir = os.path.join(current_dir, "..", "versions")
+    versions_dir = get_versions_dir()
 
     for item in os.listdir(versions_dir):
         item_path = os.path.join(versions_dir, item)
@@ -56,3 +57,9 @@ def discover_versions() -> List[str]:
         return _parse_version_key(version)
 
     return sorted(versions, key=sort_key)
+
+
+def get_versions_dir() -> Path:
+    current_dir = Path(__file__).resolve().parent
+    versions_dir = current_dir.parent / "versions"
+    return versions_dir

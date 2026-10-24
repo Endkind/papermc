@@ -1,28 +1,50 @@
+import argparse
+import logging
 import os
 import subprocess
-import sys
 from typing import List
 
 from result import Err, Ok, Result, is_err, is_ok
 
 from config.docker import DockerConfig
-from utils import discover_versions
+from logger import setup_logging
+from utils import discover_versions, get_default_argparse
 
 
 def main():
-    if len(sys.argv) > 1:
-        versions = sys.argv[1:]
-        result = build_all(versions)
+    args = get_args()
+
+    setup_logging(args.verbosity)
+
+    if args.version:
+        result = build_all(args.version)
     else:
         result = build_all()
 
     if is_ok(result):
-        print(f"Build process succeeded: {result.unwrap()}")
+        logging.info(f"Build process succeeded: {result.unwrap()}")
     elif is_err(result):
-        print(f"Build process failed: {result.unwrap_err()}")
+        logging.error(f"Build process failed: {result.unwrap_err()}")
         exit(1)
 
 
+# region args
+def get_args() -> argparse.Namespace:
+    parser = get_default_argparse("Build a version(s) of PaperMC Docker image.")
+
+    parser.add_argument(
+        "version",
+        nargs="*",
+        help="The version(s) to build. If omitted, all versions will be built.",
+    )
+
+    return parser.parse_args()
+
+
+# endregion args
+
+
+# region build
 def build(tag: str) -> Result[str, str]:
     """
     Build a Docker image with the specified tag.
@@ -43,9 +65,9 @@ def build(tag: str) -> Result[str, str]:
 
         cmd = ["docker", "build", "-t", image_name, context_path]
 
-        print(f"Building Docker image: {image_name}")
-        print(f"Build context: {context_path}")
-        print(f"Command: {' '.join(cmd)}")
+        logging.debug(f"Building Docker image: {image_name}")
+        logging.debug(f"Build context: {context_path}")
+        logging.debug(f"Command: {' '.join(cmd)}")
 
         subprocess.run(cmd, capture_output=True, text=True, check=True)
 
@@ -53,8 +75,8 @@ def build(tag: str) -> Result[str, str]:
             for alt_name in DockerConfig.ALT_IMAGE_NAME:
                 alt_image_name = f"endkind/{alt_name}:{tag}"
                 tag_cmd = ["docker", "tag", image_name, alt_image_name]
-                print(f"Tagging Docker image: {alt_image_name}")
-                print(f"Command: {' '.join(tag_cmd)}")
+                logging.debug(f"Tagging Docker image: {alt_image_name}")
+                logging.debug(f"Command: {' '.join(tag_cmd)}")
                 subprocess.run(tag_cmd, capture_output=True, text=True, check=True)
 
         return Ok(f"Docker image '{image_name}' built successfully")
@@ -74,29 +96,32 @@ def build_all(versions: List[str] = discover_versions()) -> Result[str, str]:
     if not versions:
         return Err("No build configurations found!")
 
-    print(f"Found {len(versions)} build configurations:")
+    logging.debug(f"Found {len(versions)} build configurations:")
     for version in versions:
-        print(f" - {DockerConfig.IMAGE_NAME}:{version}")
+        logging.debug(f" - {DockerConfig.IMAGE_NAME}:{version}")
+    logging.debug("")
 
-    print("\nStarting builds...\n")
+    logging.info("Starting builds...")
+    logging.info("")
 
     success_count = 0
 
     for version in versions:
-        print(f"--- Building {DockerConfig.IMAGE_NAME}:{version} ---")
+        logging.info(f"--- Building {DockerConfig.IMAGE_NAME}:{version} ---")
         result = build(version)
 
         if is_ok(result):
-            print(f"✅ {result.unwrap()}")
+            logging.info(f"✅ {result.unwrap()}")
             success_count += 1
         else:
-            print(f"❌ {result.unwrap_err()}")
-        print()
+            logging.error(f"❌ {result.unwrap_err()}")
 
     if success_count < len(versions):
         return Err(f"Build incomplete: only {success_count}/{len(versions)} succeeded")
     return Ok(f"Build complete: {success_count}/{len(versions)} succeeded")
 
+
+# endregion build
 
 if __name__ == "__main__":
     main()

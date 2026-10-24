@@ -1,5 +1,6 @@
+import argparse
+import logging
 import shutil
-import sys
 import time
 from pathlib import Path
 from typing import List
@@ -9,23 +10,43 @@ from docker.models.containers import Container
 from result import Err, Ok, Result, is_err, is_ok
 
 from config.docker import DockerConfig
-from config.project import ProjectConfig
 from config.test import TestConfig
-from utils import DockerHelper, MinecraftHelper, discover_versions
+from logger import setup_logging
+from utils import DockerHelper, MinecraftHelper, discover_versions, get_default_argparse
 
 
 def main():
-    if len(sys.argv) > 1:
-        versions = sys.argv[1:]
+    args = get_args()
+
+    setup_logging(args.verbosity)
+
+    if args.version:
+        versions = args.version
         result = test_all(versions)
     else:
         result = test_all()
 
     if is_ok(result):
-        print(f"Test process succeeded: {result.unwrap()}")
+        logging.info(f"Test process succeeded: {result.unwrap()}")
     else:
-        print(f"Test process failed: {result.unwrap_err()}")
+        logging.error(f"Test process failed: {result.unwrap_err()}")
         exit(1)
+
+
+# region args
+def get_args() -> argparse.Namespace:
+    parser = get_default_argparse("Test a version(s) of PaperMC Docker image.")
+
+    parser.add_argument(
+        "version",
+        nargs="*",
+        help="The version(s) to test. If omitted, all versions will be tested.",
+    )
+
+    return parser.parse_args()
+
+
+# endregion args
 
 
 def _setup_test_environment(path: Path = TestConfig.TEST_PATH) -> None:
@@ -110,24 +131,25 @@ def test_all(versions: List[str] | None = None) -> Result[str, str]:
     if not versions:
         return Err("No versions found")
 
-    print(f"Found {len(versions)} versions:")
+    logging.debug(f"Found {len(versions)} versions:")
     for version in versions:
-        print(f" - {DockerConfig.IMAGE_NAME}:{version}")
+        logging.debug(f" - {DockerConfig.IMAGE_NAME}:{version}")
+    logging.debug("")
 
-    print("\nStarting tests...\n")
+    logging.info("Starting tests...")
 
     success_count = 0
 
     for version in versions:
-        print(f"--- Testing {DockerConfig.IMAGE_NAME}:{version} ---")
+        logging.info(f"--- Testing {DockerConfig.IMAGE_NAME}:{version} ---")
         result = test(version)
 
         if is_ok(result):
-            print(f"✅ {result.unwrap()}")
+            logging.info(f"✅ {result.unwrap()}")
             success_count += 1
         else:
-            print(f"❌ {result.unwrap_err()}")
-        print()
+            logging.error(f"❌ {result.unwrap_err()}")
+        logging.info("")
 
     if success_count < len(versions):
         return Err(f"Test incomplete: only {success_count}/{len(versions)} succeeded")
