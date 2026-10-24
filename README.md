@@ -38,6 +38,20 @@ This repository name was created accidentally during a configuration change. Sin
 
 The primary and recommended repository is `endkind/papermc`.
 
+### Planned Changes & Java Version Tagging (Breaking Changes Notice)
+
+> [!WARNING]
+> **Upcoming Changes (Breaking Changes & Custom Runtimes):**
+>
+> 1. **Custom Runtimes for Specific Versions (e.g., 1.16.5 & 1.17):**
+>    - PaperMC 1.16.5 and 1.17 specifically require Java 16, a non-LTS Java version that is no longer maintained upstream. Outdated libraries in these runtimes prevent tools such as the healthchecker from working on modern base images (requiring older Ubuntu build environments as a temporary workaround).
+>    - To maximize operational stability, maintain overall system security, and deliver the greatest utility for all users, dedicated custom runtimes derived from the originals will be provided for these affected versions (starting with 1.16.5 and 1.17).
+>    - This strategy will also be extended to any other Java versions should they encounter similar upstream discontinuation.
+>
+> 2. **Flexible Java LTS Tags:**
+>    - To optimize utility and performance across diverse server environments, explicit tags for alternative Java LTS versions will be introduced alongside standard tags (e.g., `endkind/papermc:1.21-j21` and, pending test validation, `endkind/papermc:1.21-j25`).
+>    - The standard tag (e.g., `endkind/papermc:1.21`) will remain intact, consistently shipping PaperMC's recommended Java version to preserve frictionless compatibility and prevent disruption.
+
 ### Versions Overview
 
 The current support status for all versions is also available on the live status page:
