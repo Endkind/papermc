@@ -9,11 +9,10 @@ from uuid import UUID, uuid4
 from docker.models.containers import Container
 from result import Err, Ok, Result, is_err, is_ok
 
-from argparser import get_default_argparse
 from config.docker import DockerConfig
 from config.test import TestConfig
 from logger import setup_logging
-from utils import DockerHelper, MinecraftHelper, discover_versions
+from utils import DockerHelper, MinecraftHelper, discover_versions, get_default_argparse
 
 
 def main():

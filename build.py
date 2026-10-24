@@ -6,10 +6,9 @@ from typing import List
 
 from result import Err, Ok, Result, is_err, is_ok
 
-from argparser import get_default_argparse
 from config.docker import DockerConfig
 from logger import setup_logging
-from utils import discover_versions
+from utils import discover_versions, get_default_argparse
 
 
 def main():

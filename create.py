@@ -4,12 +4,11 @@ import shutil
 from pathlib import Path
 from test import test
 
-from result import Err, Ok, Result, is_err, is_ok
+from result import Err, Ok, Result, is_err
 
-from argparser import get_default_argparse
 from build import build
 from logger import setup_logging
-from utils import get_versions_dir
+from utils import get_default_argparse, get_versions_dir
 
 LOGGING_LEVELS = {0: logging.WARNING, 1: logging.INFO, 2: logging.DEBUG}
 
