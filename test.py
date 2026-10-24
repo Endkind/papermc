@@ -109,6 +109,14 @@ def test(tag: str) -> Result[str, str]:
         _cleanup_test_environment(container, path)
         return Err(f"Container failed to start for image '{image_name}'")
 
+    if not DockerHelper.is_healthy(
+        container,
+        attempts=TestConfig.ATTEMPTS,
+        attempt_delay=TestConfig.ATTEMPT_RETRY_DELAY,
+    ).unwrap_or(False):
+        _cleanup_test_environment(container, path)
+        return Err(f"Container is not healthy for image '{image_name}'")
+
     result = MinecraftHelper.is_minecraft_server_reachable(
         "127.0.0.1",
         25565,

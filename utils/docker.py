@@ -105,6 +105,31 @@ class DockerHelper:
             return Err(f"Docker error: {e}")
 
     @staticmethod
+    def is_healthy(
+        container: Container, *, attempts: int = 5, attempt_delay: float = 5.0
+    ) -> Result[bool, str]:
+        try:
+            for attempt in range(attempts):
+                container.reload()
+
+                if container.status == "running":
+                    health_status = (
+                        container.attrs.get("State", {}).get("Health", {}).get("Status")
+                    )
+                    if health_status == "healthy":
+                        return Ok(True)
+
+                time.sleep(attempt_delay)
+
+            return Ok(False)
+
+        except APIError as e:
+            return Err(f"Failed to check health status: {e}")
+
+        except DockerException as e:
+            return Err(f"Docker error: {e}")
+
+    @staticmethod
     def remove(
         container: Union[Container, str], force: bool = False
     ) -> Result[None, str]:

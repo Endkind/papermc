@@ -14,10 +14,11 @@ FROM rust:1.94.0-slim AS healthcheck-build
 
 WORKDIR /build
 
-RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates \
+RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates musl-tools \
+    && rustup target add x86_64-unknown-linux-musl \
     && TAG=$(git ls-remote --tags --sort="v:refname" https://github.com/Endkind/MinecraftHealthCheck.git | grep -v '\^{}' | tail -n 1 | cut -d/ -f3-) \
     && git clone --depth 1 --branch "$TAG" https://github.com/Endkind/MinecraftHealthCheck.git . \
-    && cargo build --release \
+    && cargo build --release --target x86_64-unknown-linux-musl \
     && rm -rf /var/lib/apt/lists/*
 
 FROM eclipse-temurin:16 AS runtime
@@ -38,7 +39,7 @@ COPY --from=build \
     /endkind/server.jar
 COPY --from=healthcheck-build \
     --chown=papermc:papermc \
-    /build/target/release/MinecraftHealthCheck \
+    /build/target/x86_64-unknown-linux-musl/release/MinecraftHealthCheck \
     /endkind/healthcheck
 
 RUN chmod +x \
