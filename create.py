@@ -95,12 +95,6 @@ def remove_version(version: str) -> Result[None, str]:
     try:
         shutil.rmtree(version_dir)
     except OSError as error:
-        remove_version(version).unwrap_or_else(
-            lambda err: logging.error(
-                f"Failed to remove version after build failure: {err}"
-            )
-        )
-
         return Err(f"Failed to remove version {version}: {error}")
 
     return Ok(None)
