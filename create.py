@@ -21,11 +21,13 @@ def main():
 
     setup_logging(args.verbosity, min_module_width=6)
 
+    logging.info(f"Creating version {args.version} with Java {args.java_version}")
     create_version_result = create_version(args.version, args.java_version)
     if is_err(create_version_result):
         logging.error(f"Failed to create version: {create_version_result.err()}")
         exit(1)
 
+    logging.info(f"Building version {args.version}")
     build_version_result = build(args.version)
     if is_err(build_version_result):
         logging.error(f"Failed to build version: {build_version_result.err()}")
@@ -39,6 +41,7 @@ def main():
         exit(1)
     logging.info(build_version_result.unwrap())
 
+    logging.info(f"Testing version {args.version}")
     test_version_result = test(args.version)
     if is_err(test_version_result):
         logging.error(f"Failed to test version: {test_version_result.err()}")
@@ -54,8 +57,6 @@ def main():
 
 
 def create_version(version: str, java_version: str) -> Result[None, str]:
-    logging.info(f"Creating version {version} with Java {java_version}")
-
     version_dir = get_versions_dir() / version
 
     logging.debug("Checking if version directory already exists")
