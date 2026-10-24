@@ -64,7 +64,11 @@ def create_version(version: str, java_version: str) -> Result[None, str]:
 
     try:
         logging.debug("Copying version template")
-        shutil.copytree(VERSION_TEMPLATE_PATH, version_dir)
+        shutil.copytree(
+            VERSION_TEMPLATE_PATH,
+            version_dir,
+            ignore=shutil.ignore_patterns(".disabled"),
+        )
 
         for file_name in TEMPLATE_FILES_TO_RENDER:
             template_path = version_dir / file_name
