@@ -10,16 +10,32 @@ RUN pip install -r requirements.txt
 
 RUN python get-papermc.py --version $VERSION --build $BUILD --output /endkind/server.jar
 
-FROM rust:1.94.0-slim AS healthcheck-build
+FROM ubuntu:20.04 AS healthcheck-build
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PATH="/root/.cargo/bin:${PATH}"
 
 WORKDIR /build
 
-RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates musl-tools \
-    && rustup target add x86_64-unknown-linux-musl \
-    && TAG=$(git ls-remote --tags --sort="v:refname" https://github.com/Endkind/MinecraftHealthCheck.git | grep -v '\^{}' | tail -n 1 | cut -d/ -f3-) \
-    && git clone --depth 1 --branch "$TAG" https://github.com/Endkind/MinecraftHealthCheck.git . \
-    && cargo build --release --target x86_64-unknown-linux-musl \
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    ca-certificates \
+    curl \
+    git \
     && rm -rf /var/lib/apt/lists/*
+
+
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \
+    | sh -s -- -y --default-toolchain 1.94.0 --profile minimal
+
+
+RUN TAG=$(git ls-remote --tags --sort="v:refname" \
+        https://github.com/Endkind/MinecraftHealthCheck.git \
+        | grep -v '\^{}' | tail -n 1 | cut -d/ -f3-) \
+    && git clone --depth 1 --branch "$TAG" \
+        https://github.com/Endkind/MinecraftHealthCheck.git .
+
+RUN cargo build --release
 
 FROM eclipse-temurin:16 AS runtime
 
@@ -39,7 +55,7 @@ COPY --from=build \
     /endkind/server.jar
 COPY --from=healthcheck-build \
     --chown=papermc:papermc \
-    /build/target/x86_64-unknown-linux-musl/release/MinecraftHealthCheck \
+    /build/target/release/MinecraftHealthCheck \
     /endkind/healthcheck
 
 RUN chmod +x \
