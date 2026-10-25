@@ -5,6 +5,8 @@ import subprocess
 from typing import List
 
 from result import Err, Ok, Result, is_err, is_ok
+from tqdm import tqdm
+from tqdm.contrib.logging import logging_redirect_tqdm
 
 from config.docker import DockerConfig
 from logger import setup_logging
@@ -17,9 +19,9 @@ def main():
     setup_logging(args.verbosity)
 
     if args.version:
-        result = build_all(args.version)
+        result = build_all(args.version, args.progress)
     else:
-        result = build_all()
+        result = build_all(progress=args.progress)
 
     if is_ok(result):
         logging.info(f"Build process succeeded: {result.unwrap()}")
@@ -88,7 +90,9 @@ def build(tag: str) -> Result[str, str]:
         return Err(f"Unexpected error: {str(e)}")
 
 
-def build_all(versions: List[str] = discover_versions()) -> Result[str, str]:
+def build_all(
+    versions: List[str] = discover_versions(), progress: bool = False
+) -> Result[str, str]:
     """
     Build all available Docker images by auto-discovering available configurations.
     """
@@ -106,16 +110,26 @@ def build_all(versions: List[str] = discover_versions()) -> Result[str, str]:
 
     success_count = 0
 
-    for version in versions:
-        logging.info(f"--- Building {DockerConfig.IMAGE_NAME}:{version} ---")
-        result = build(version)
+    with logging_redirect_tqdm():
+        with tqdm(
+            total=len(versions),
+            desc="Building Docker images",
+            unit="image",
+            position=0,
+            leave=False,
+            disable=not progress,
+        ) as progress_bar:
+            for version in versions:
+                logging.info(f"--- Building {DockerConfig.IMAGE_NAME}:{version} ---")
+                result = build(version)
 
-        if is_ok(result):
-            logging.info(f"✅ {result.unwrap()}")
-            logging.info("")
-            success_count += 1
-        else:
-            logging.error(f"❌ {result.unwrap_err()}")
+                if is_ok(result):
+                    logging.info(f"✅ {result.unwrap()}")
+                    logging.info("")
+                    success_count += 1
+                else:
+                    logging.error(f"❌ {result.unwrap_err()}")
+                progress_bar.update(1)
 
     if success_count < len(versions):
         return Err(f"Build incomplete: only {success_count}/{len(versions)} succeeded")

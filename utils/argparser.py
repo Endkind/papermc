@@ -25,4 +25,12 @@ def get_default_argparse(description: str):
         help="Show warnings and errors only.",
     )
 
+    parser.add_argument(
+        "--progress",
+        "-p",
+        dest="progress",
+        action="store_true",
+        help="Show progress output.",
+    )
+
     return parser

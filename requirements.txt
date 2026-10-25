@@ -11,6 +11,7 @@ identify==2.6.20
 idna==3.15
 mcstatus==13.1.0
 nodeenv==1.11.0
+packaging==26.3
 platformdirs==4.13.5
 pre_commit==4.7.0
 pydantic==2.13.4
@@ -19,6 +20,7 @@ python-discovery==1.6.4
 PyYAML==6.0.3
 requests==2.33.1
 result==0.17.0
+tqdm==4.70.1
 typing-inspection==0.4.2
 typing_extensions==4.16.0
 urllib3==2.8.0
