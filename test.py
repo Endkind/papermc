@@ -8,6 +8,8 @@ from uuid import UUID, uuid4
 
 from docker.models.containers import Container
 from result import Err, Ok, Result, is_err, is_ok
+from tqdm import tqdm
+from tqdm.contrib.logging import logging_redirect_tqdm
 
 from config.docker import DockerConfig
 from config.test import TestConfig
@@ -21,10 +23,9 @@ def main():
     setup_logging(args.verbosity)
 
     if args.version:
-        versions = args.version
-        result = test_all(versions)
+        result = test_all(args.version, args.progress)
     else:
-        result = test_all()
+        result = test_all(progress=args.progress)
 
     if is_ok(result):
         logging.info(f"Test process succeeded: {result.unwrap()}")
@@ -70,7 +71,7 @@ def _cleanup_test_environment(
     shutil.rmtree(path, ignore_errors=True)
 
 
-def test(tag: str) -> Result[str, str]:
+def test(tag: str, progress: bool = False) -> Result[str, str]:
     uuid: UUID = uuid4()
     path = TestConfig.TEST_PATH / str(uuid)
     while path.exists():
@@ -105,6 +106,7 @@ def test(tag: str) -> Result[str, str]:
         container,
         attempts=TestConfig.ATTEMPTS,
         attempt_delay=TestConfig.ATTEMPT_RETRY_DELAY,
+        progress=progress,
     ).unwrap_or(False):
         _cleanup_test_environment(container, path)
         return Err(f"Container failed to start for image '{image_name}'")
@@ -113,6 +115,7 @@ def test(tag: str) -> Result[str, str]:
         container,
         attempts=TestConfig.ATTEMPTS,
         attempt_delay=TestConfig.ATTEMPT_RETRY_DELAY,
+        progress=progress,
     ).unwrap_or(False):
         _cleanup_test_environment(container, path)
         return Err(f"Container is not healthy for image '{image_name}'")
@@ -122,6 +125,7 @@ def test(tag: str) -> Result[str, str]:
         25565,
         TestConfig.ATTEMPTS,
         TestConfig.ATTEMPT_RETRY_DELAY,
+        progress,
     )
 
     _cleanup_test_environment(container, path)
@@ -132,7 +136,9 @@ def test(tag: str) -> Result[str, str]:
     return Ok(f"Docker image '{image_name}' tested successfully")
 
 
-def test_all(versions: List[str] | None = None) -> Result[str, str]:
+def test_all(
+    versions: List[str] | None = None, progress: bool = False
+) -> Result[str, str]:
     if versions is None:
         versions = discover_versions()
 
@@ -149,16 +155,26 @@ def test_all(versions: List[str] | None = None) -> Result[str, str]:
 
     success_count = 0
 
-    for version in versions:
-        logging.info(f"--- Testing {DockerConfig.IMAGE_NAME}:{version} ---")
-        result = test(version)
+    with logging_redirect_tqdm():
+        with tqdm(
+            total=len(versions),
+            desc="Testing Docker images",
+            unit="test",
+            position=0,
+            leave=False,
+            disable=not progress,
+        ) as progress_bar:
+            for version in versions:
+                logging.info(f"--- Testing {DockerConfig.IMAGE_NAME}:{version} ---")
+                result = test(version, progress)
 
-        if is_ok(result):
-            logging.info(f"✅ {result.unwrap()}")
-            success_count += 1
-        else:
-            logging.error(f"❌ {result.unwrap_err()}")
-        logging.info("")
+                if is_ok(result):
+                    logging.info(f"✅ {result.unwrap()}")
+                    success_count += 1
+                else:
+                    logging.error(f"❌ {result.unwrap_err()}")
+                logging.info("")
+                progress_bar.update(1)
 
     if success_count < len(versions):
         return Err(f"Test incomplete: only {success_count}/{len(versions)} succeeded")

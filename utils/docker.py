@@ -6,6 +6,7 @@ import docker
 from docker.errors import APIError, DockerException, ImageNotFound, NotFound
 from docker.models.containers import Container
 from result import Err, Ok, Result, is_err, is_ok
+from tqdm import tqdm
 
 
 class DockerHelper:
@@ -87,16 +88,30 @@ class DockerHelper:
 
     @staticmethod
     def is_running(
-        container: Container, *, attempts: int = 5, attempt_delay: float = 5.0
+        container: Container,
+        *,
+        attempts: int = 5,
+        attempt_delay: float = 5.0,
+        progress: bool = False,
     ) -> Result[bool, str]:
         try:
-            for attempt in range(attempts):
-                container.reload()
+            with tqdm(
+                total=attempts,
+                desc="Checking if container is running",
+                unit="attempt",
+                position=1,
+                leave=False,
+                disable=not progress,
+            ) as progress_bar:
+                for attempt in range(attempts):
+                    container.reload()
 
-                if container.status == "running":
-                    return Ok(True)
+                    if container.status == "running":
+                        return Ok(True)
 
-                time.sleep(attempt_delay)
+                    progress_bar.update(1)
+
+                    time.sleep(attempt_delay)
 
         except APIError as e:
             return Err(f"Failed to check status: {e}")
@@ -106,20 +121,36 @@ class DockerHelper:
 
     @staticmethod
     def is_healthy(
-        container: Container, *, attempts: int = 5, attempt_delay: float = 5.0
+        container: Container,
+        *,
+        attempts: int = 5,
+        attempt_delay: float = 5.0,
+        progress: bool = False,
     ) -> Result[bool, str]:
         try:
-            for attempt in range(attempts):
-                container.reload()
+            with tqdm(
+                total=attempts,
+                desc="Checking if container is healthy",
+                unit="attempt",
+                position=1,
+                leave=False,
+                disable=not progress,
+            ) as progress_bar:
+                for attempt in range(attempts):
+                    container.reload()
 
-                if container.status == "running":
-                    health_status = (
-                        container.attrs.get("State", {}).get("Health", {}).get("Status")
-                    )
-                    if health_status == "healthy":
-                        return Ok(True)
+                    if container.status == "running":
+                        health_status = (
+                            container.attrs.get("State", {})
+                            .get("Health", {})
+                            .get("Status")
+                        )
+                        if health_status == "healthy":
+                            return Ok(True)
 
-                time.sleep(attempt_delay)
+                    progress_bar.update(1)
+
+                    time.sleep(attempt_delay)
 
             return Ok(False)
 
